@@ -51,9 +51,51 @@ where febsales.Quantity>2
 and length(orderid) = 6
 AND orderid <> 'OrderID';
 
-List all the products sold in Los Angeles in February, and include how many of each were sold.
+#8. List all the products sold in Los Angeles in February, and include how many of each were sold.
 select product
 ,sum(quantity)
 from FebSales
 where location like '%Los Angeles%'
 group by product;
+
+#9. Which locations in New York received at least 3 orders in January, and how many orders did they each receive?
+select distinct location
+,count(orderid)
+from jansales
+where location like '%NY%'
+and length(orderid) = 6
+and orderid <> 'Order ID'
+group by location
+having count(orderid)>2;
+
+#10. How many of each type of headphone were sold in February?
+select product
+,sum(quantity) quantity
+from febsales
+where product like '%Headphones%'
+group by product;
+
+#11. What was the average amount spent per account in February?
+select sum(quantity*price)/count(cust.acctnum) average_spent_per_account
+from febsales feb
+left join customers cust
+on cust.order_id=feb.orderid
+where length(order_id) = 6
+and order_id <> 'Order ID';
+
+#12. What was the average quantity of products purchased per account in February?
+select sum(quantity)/count(cust.acctnum) quantity_purchased_per_account
+from febsales feb
+left join customers cust
+on cust.order_id=feb.orderid
+where length(order_id) = 6
+and order_id <> 'Order ID';
+
+#13.Which product brought in the most revenue in January and how much revenue did it bring in total?
+select product
+,sum(quantity*price) total_revenue
+from jansales
+group by product
+order by total_revenue desc
+limit 1;
+
